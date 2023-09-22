@@ -1,0 +1,3 @@
+- pipeline.id: app_log_data
+  path.config: "/usr/share/logstash/pipeline/app"
+  pipeline.workers: 1

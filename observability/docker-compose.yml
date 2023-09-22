@@ -15,7 +15,6 @@ x-logstash:
       - elasticsearch  
   volumes:
     &logstash-volumes
-    - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:rw
     - ./logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:rw
     - ./logstash/pipeline:/usr/share/logstash/pipeline/app:rw
 
