@@ -5,11 +5,24 @@ x-nginx-log-generator:
   build: log-generator-nginx
   volumes: 
     - generated_log:/data
+  
+x-filebeat:
+  &filebeat
+  image: docker.elastic.co/beats/filebeat:8.3.3
+  user: root
 
 
 services:
   log-generator:
     <<: *nginx-log-generator
+  
+  filebeat:
+    <<: *filebeat
+    volumes: 
+      #filebeat 설정파일을 mount
+      - generated_log:/usr/share/filebeat/log
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml              
+    restart: always
 
 
 volumes:
