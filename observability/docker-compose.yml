@@ -5,21 +5,26 @@ x-elasticsearch:
   image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
   volumes:
     &elasticsearch-volume
-    - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-    - ./elasticsearch/jvm.options:/usr/share/elasticsearch/config/jvm.options
+    - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:rw
+    - ./elasticsearch/jvm.options:/usr/share/elasticsearch/config/jvm.options:rw
 
 x-logstash: 
   &logstash
   image: docker.elastic.co/logstash/logstash:8.3.3
   depends_on:
       - elasticsearch  
+  volumes:
+    &logstash-volumes
+    - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:rw
+    - ./logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:rw
+    - ./logstash/pipeline:/usr/share/logstash/pipeline/app:rw
 
 x-prometheus: 
   &prometheus
   image: prom/prometheus:latest
   volumes:
     &prometheus-volume
-    - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:rw
   command:
     - '--config.file=/etc/prometheus/prometheus.yml'
 
