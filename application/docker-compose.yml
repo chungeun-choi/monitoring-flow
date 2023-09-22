@@ -1,0 +1,16 @@
+version: '3.8'
+
+x-nginx-log-generator:
+  &nginx-log-generator
+  build: log-generator-nginx
+  volumes: 
+    - generated_log:/data
+
+
+services:
+  log-generator:
+    <<: *nginx-log-generator
+
+
+volumes:
+  generated_log:

@@ -52,14 +52,14 @@ func main() {
 		userAgent = gofakeit.UserAgent()
 
 		row := fmt.Sprintf("%s - - [%s] \"%s %s %s\" %v %v \"%s\" \"%s\"\n", ip, timeLocal.Format("02/Jan/2006:15:04:05 -0700"), httpMethod, path, httpVersion, statusCode, bodyBytesSent, referrer, userAgent)
-		
+		fmt.Print(row)
 		makeLogFile(row)
 	}
 }
 
 func makeLogFile(row string) {
 	dataRow := []byte(row)
-	fileName := "logData.log"
+	fileName := os.Getenv("FILE_PATH")
 	
 	f,err:= os.OpenFile(fileName, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0755)
 	defer f.Close()

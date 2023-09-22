@@ -21,19 +21,17 @@ RUN CGO_ENABLED=0 go build -o /app
 RUN mkdir /user && \
     echo 'nobody:x:65534:65534:nobody:/:' > /user/passwd && \
     echo 'nobody:x:65534:' > /user/group
-
+RUN echo '' > logData.log
 # The final stage
 FROM scratch
 
 # Copy the binary from the builder stage
 COPY --from=builder /app /app
-
+ENV FILE_PATH=/data/logData.log
 # Copy the /etc/passwd file we created in the builder stage. This creates a new
 # non-root user as a security best practice.
 COPY --from=builder /user/group /user/passwd /etc/
-
-# Run as the new non-root by default
-USER nobody:nobody
+COPY --from=builder / /
 
 # Run the binary
 ENTRYPOINT [ "/app" ]
