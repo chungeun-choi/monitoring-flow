@@ -1,0 +1,44 @@
+version: '3.8'
+
+x-elasticsearch: 
+  &elasticsearch
+  image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
+  volumes:
+    &elasticsearch-volume
+    - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    - ./elasticsearch/jvm.options:/usr/share/elasticsearch/config/jvm.options
+
+x-logstash: 
+  &logstash
+  image: docker.elastic.co/logstash/logstash:8.3.3
+  depends_on:
+      - elasticsearch  
+
+x-prometheus: 
+  &prometheus
+  image: prom/prometheus:latest
+  volumes:
+    &prometheus-volume
+    - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  command:
+    - '--config.file=/etc/prometheus/prometheus.yml'
+
+
+services:
+  elasticsearch:
+    <<: *elasticsearch
+    ports:
+      - 9200:9200
+      
+  logstash:
+    <<: *logstash
+    ports:
+      - 5044:5044
+
+  prometheus:
+    <<: *prometheus
+    ports:
+      - 9090:9090
+
+
+    
