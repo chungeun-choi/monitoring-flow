@@ -18,6 +18,8 @@ transform tools: `Logstash`
 
 OLAP: `Elasticsearch`,`Prometheus`
 
+env build tool: `docker`
+
 **모니터링 대상** 
 
 APP(web-server log): web server에 의해서 생성되는 log 파일
