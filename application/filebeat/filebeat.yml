@@ -4,4 +4,4 @@ filebeat.inputs:
     - /usr/share/filebeat/log/*.log
 
 output.logstash:
-  hosts: ["logstash:5042"]
+  hosts: ["logstash:5044"]
