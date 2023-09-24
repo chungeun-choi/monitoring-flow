@@ -17,15 +17,18 @@ x-filebeat:
 services:
   app:
     <<: *nginx-log-generator
+    networks:
+      - monitoring-flow
   
   filebeat:
     <<: *filebeat
     volumes: 
       #filebeat 설정파일을 mount
       - generated_log:/usr/share/filebeat/log
-      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml              
-    restart: always
-  
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:rw    
+    networks:
+      - monitoring-flow          
+    
   node-exporter:
     image: prom/node-exporter:latest
     restart: unless-stopped
@@ -40,17 +43,30 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     ports:
       - 9104:9100
+    networks:
+      - monitoring-flow
     
   cadvisor:  
     image: google/cadvisor:latest  
+    privileged: true
     volumes:  
       - /:/rootfs:ro  
       - /var/run:/var/run:ro  
       - /sys:/sys:ro  
-      - /var/lib/docker/:/var/lib/docker:ro  
+      # install in ubuntu
+      #- /var/lib/docker/:/var/lib/docker:ro  
+      # install in wsl
+      - /mnt/windows_docker/:/rootfs/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro  
     ports:
-      - 9106:9100
+      - 9105:9101
+    networks:
+      - monitoring-flow
+    
 
 volumes:
   generated_log:
+
+
+networks:
+  monitoring-flow:

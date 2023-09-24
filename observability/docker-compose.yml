@@ -7,6 +7,8 @@ x-elasticsearch:
     &elasticsearch-volume
     - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:rw
     - ./elasticsearch/jvm.options:/usr/share/elasticsearch/config/jvm.options:rw
+  networks:
+    - monitoring-flow
 
 x-logstash: 
   &logstash
@@ -17,6 +19,8 @@ x-logstash:
     &logstash-volumes
     - ./logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:rw
     - ./logstash/pipeline:/usr/share/logstash/pipeline/app:rw
+  networks:
+    - monitoring-flow
 
 x-prometheus: 
   &prometheus
@@ -26,6 +30,8 @@ x-prometheus:
     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:rw
   command:
     - '--config.file=/etc/prometheus/prometheus.yml'
+  networks:
+    - monitoring-flow
 
 
 services:
@@ -48,6 +54,8 @@ services:
     image: grafana/grafana:latest
     ports:
       - 3000:3000
-
-
     
+networks:
+  monitoring-flow:
+    name: application_monitoring-flow
+    external: true
