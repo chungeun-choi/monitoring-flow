@@ -10,10 +10,12 @@ x-filebeat:
   &filebeat
   image: docker.elastic.co/beats/filebeat:8.3.3
   user: root
+  depends_on:
+    - app
 
 
 services:
-  log-generator:
+  app:
     <<: *nginx-log-generator
   
   filebeat:
@@ -23,7 +25,32 @@ services:
       - generated_log:/usr/share/filebeat/log
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml              
     restart: always
-
+  
+  node-exporter:
+    image: prom/node-exporter:latest
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - 9104:9100
+    
+  cadvisor:  
+    image: google/cadvisor:latest  
+    volumes:  
+      - /:/rootfs:ro  
+      - /var/run:/var/run:ro  
+      - /sys:/sys:ro  
+      - /var/lib/docker/:/var/lib/docker:ro  
+      - /dev/disk/:/dev/disk:ro  
+    ports:
+      - 9106:9100
 
 volumes:
   generated_log:
