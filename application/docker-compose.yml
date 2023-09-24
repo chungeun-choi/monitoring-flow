@@ -59,7 +59,7 @@ services:
       - /mnt/windows_docker/:/rootfs/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro  
     ports:
-      - 9105:9101
+      - 8080:8080
     networks:
       - monitoring-flow
     
