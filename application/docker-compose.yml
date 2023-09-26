@@ -13,6 +13,17 @@ x-filebeat:
   depends_on:
     - app
 
+x-mysqld-exporter: &mysqld-exporter
+  command:
+    - '--collect.global_status'
+    - '--collect.info_schema.innodb_metrics'
+    - '--collect.auto_increment.columns'
+    - '--collect.info_schema.processlist'
+    - '--collect.binlog_size'
+    - '--collect.perf_schema.tablelocks'
+    - '--collect.global_variables'
+    - '--collect.slave_status'
+
 
 services:
   app:
@@ -62,7 +73,41 @@ services:
       - 8080:8080
     networks:
       - monitoring-flow
-    
+
+  mysql-master:
+    image: mysql:8.0
+    ports:
+      - 3306:3306 
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+      MYSQL_DATABASE: test
+    command: >
+      mysqld
+      --log-bin=mysql-bin.log
+      --server-id 1
+      --binlog-format=row
+      --gtid_mode=on
+      --enforce-gtid-consistency=on
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - monitoring-flow
+
+  mysqld-exporter:
+    <<: *mysqld-exporter
+    image: prom/mysqld-exporter:v0.13.0
+    environment:
+      DATA_SOURCE_NAME: root@(mysql-master:3306)/
+    ports:
+      - 9105:9104
+    depends_on:
+      mysql-master:
+        condition: service_healthy
+    networks:
+      - monitoring-flow
 
 volumes:
   generated_log:
