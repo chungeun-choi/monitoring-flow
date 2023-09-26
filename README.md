@@ -2,7 +2,8 @@
 
 ## Oversview
 
-모니터링을 위한 환경 구축 예시 입니다. 직접 구축함으로 써 학습하기 위한 프로젝트입니다
+모니터링을 위한 환경 구축 예시 입니다. 
+[[Demo dashboard Link]](http://demo.cucuridas.info:34322)
 
 ### topology
 
