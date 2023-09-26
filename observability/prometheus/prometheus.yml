@@ -10,6 +10,6 @@ scrape_configs:
       - targets: ['cadvisor:8080']
   - job_name: 'mysql-exporter'
     static_configs:
-      - targets: ['mysql-exporter:9100']
+      - targets: ['mysqld-exporter:9104']
 
 
