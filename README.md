@@ -3,7 +3,7 @@
 ## Oversview
 
 모니터링을 위한 환경 구축 예시 입니다. 
-[[Demo dashboard Link]](http://demo.cucuridas.info:34322)
+[[~~Demo dashboard Link~~]](http://demo.cucuridas.info:34322)
 
 ### topology
 
